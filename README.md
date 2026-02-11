@@ -108,6 +108,8 @@ This repository is configured with a GitHub Actions workflow to deploy the Vite 
 2. In GitHub, go to **Settings → Pages** and set **Source** to **Deploy from a branch**.
 3. Select branch **`gh-pages`** and folder **`/ (root)`**.
 4. The workflow `.github/workflows/deploy-gh-pages.yml` builds and publishes the `build/` directory to `gh-pages`.
+2. In GitHub, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. The workflow `.github/workflows/deploy-gh-pages.yml` builds and publishes the `build/` directory.
 
 Notes:
 - `vite.config.mjs` automatically sets the correct `base` path during GitHub Actions runs.
