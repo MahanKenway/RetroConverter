@@ -1,0 +1,398 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors - Windows 98 Title Bar Blue */
+    --color-primary: #000080; /* navy blue */
+    --color-primary-foreground: #FFFFFF; /* white */
+
+    /* Secondary Colors - Windows 98 Button Gray */
+    --color-secondary: #C0C0C0; /* silver */
+    --color-secondary-foreground: #000000; /* black */
+
+    /* Accent Colors - Hyperlink Blue */
+    --color-accent: #0000FF; /* blue */
+    --color-accent-foreground: #FFFFFF; /* white */
+
+    /* Background Colors - Desktop Teal */
+    --color-background: #008080; /* teal */
+    --color-foreground: #FFFFFF; /* white */
+
+    /* Surface Colors - Window Gray */
+    --color-card: #C0C0C0; /* silver */
+    --color-card-foreground: #000000; /* black */
+
+    /* Popover Colors */
+    --color-popover: #C0C0C0; /* silver */
+    --color-popover-foreground: #000000; /* black */
+
+    /* Muted Colors */
+    --color-muted: #808080; /* gray */
+    --color-muted-foreground: #000000; /* black */
+
+    /* Border Colors */
+    --color-border: #808080; /* gray */
+    --color-input: #FFFFFF; /* white */
+    --color-ring: #000080; /* navy blue */
+
+    /* Success Colors */
+    --color-success: #008000; /* green */
+    --color-success-foreground: #FFFFFF; /* white */
+
+    /* Warning Colors */
+    --color-warning: #FFFF00; /* yellow */
+    --color-warning-foreground: #000000; /* black */
+
+    /* Error/Destructive Colors */
+    --color-error: #FF0000; /* red */
+    --color-error-foreground: #FFFFFF; /* white */
+    --color-destructive: #FF0000; /* red */
+    --color-destructive-foreground: #FFFFFF; /* white */
+
+    /* Text Colors */
+    --color-text-primary: #000000; /* black */
+    --color-text-secondary: #808080; /* gray */
+
+    /* Windows 98 Specific Colors */
+    --color-highlight: #DFDFDF; /* light gray */
+    --color-shadow: #808080; /* gray */
+    --color-dark-shadow: #000000; /* black */
+    --color-button-face: #C0C0C0; /* silver */
+    --color-window-frame: #000000; /* black */
+    --color-title-bar-active: #000080; /* navy blue */
+    --color-title-bar-inactive: #808080; /* gray */
+    --color-title-bar-text: #FFFFFF; /* white */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  /* Windows 98 Desktop Styles */
+  .desktop-environment {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-background);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Taskbar Styles */
+  .taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background-color: var(--color-button-face);
+    border-top: 2px solid var(--color-highlight);
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+    z-index: 200;
+    box-shadow: inset 0 1px 0 var(--color-highlight);
+  }
+
+  .taskbar-start-button {
+    height: 22px;
+    padding: 0 16px 0 4px;
+    background-color: var(--color-button-face);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 11px;
+    transition: all 150ms ease-out;
+  }
+
+  .taskbar-start-button:active {
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    transform: translate(1px, 1px);
+  }
+
+  .taskbar-start-logo {
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-primary);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .taskbar-divider {
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(to right, var(--color-shadow), var(--color-highlight));
+    margin: 0 4px;
+  }
+
+  .taskbar-clock {
+    margin-left: auto;
+    padding: 0 8px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    border: 2px solid;
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    font-size: 11px;
+  }
+
+  /* Window Styles */
+  .window-98 {
+    position: absolute;
+    background-color: var(--color-card);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    min-height: 100px;
+  }
+
+  .window-title-bar {
+    height: 18px;
+    background: linear-gradient(to right, var(--color-title-bar-active), #1084D0);
+    padding: 2px 2px 2px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: move;
+    user-select: none;
+  }
+
+  .window-title-bar.inactive {
+    background: linear-gradient(to right, var(--color-title-bar-inactive), #B5B5B5);
+  }
+
+  .window-title {
+    color: var(--color-title-bar-text);
+    font-size: 11px;
+    font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 2px;
+  }
+
+  .window-control-button {
+    width: 16px;
+    height: 14px;
+    background-color: var(--color-button-face);
+    border: 1px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 8px;
+    font-weight: 700;
+    transition: all 150ms ease-out;
+  }
+
+  .window-control-button:active {
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    transform: translate(1px, 1px);
+  }
+
+  .window-content {
+    flex: 1;
+    padding: 8px;
+    overflow: auto;
+    background-color: var(--color-card);
+  }
+
+  /* Windows 98 Button Styles */
+  .button-98 {
+    height: 23px;
+    padding: 0 16px;
+    background-color: var(--color-button-face);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .button-98:hover {
+    background-color: #D4D4D4;
+  }
+
+  .button-98:active {
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    transform: translate(1px, 1px);
+  }
+
+  .button-98:disabled {
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+  }
+
+  .button-98:focus-visible {
+    outline: 1px dotted var(--color-text-primary);
+    outline-offset: -4px;
+  }
+
+  /* Windows 98 Input Styles */
+  .input-98 {
+    height: 21px;
+    padding: 2px 4px;
+    background-color: var(--color-input);
+    border: 2px solid;
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+  }
+
+  .input-98:focus {
+    outline: 1px dotted var(--color-text-primary);
+    outline-offset: -3px;
+  }
+
+  /* Windows 98 Progress Bar */
+  .progress-98 {
+    height: 20px;
+    background-color: var(--color-input);
+    border: 2px solid;
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-98-bar {
+    height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--color-primary),
+      var(--color-primary) 10px,
+      #0000A0 10px,
+      #0000A0 20px
+    );
+    transition: width 150ms ease-out;
+  }
+
+  .progress-98-bar.animated {
+    animation: progress-stripe 1s linear infinite;
+  }
+
+  @keyframes progress-stripe {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 28px 0;
+    }
+  }
+
+  /* Windows 98 Select/Dropdown */
+  .select-98 {
+    height: 21px;
+    padding: 2px 20px 2px 4px;
+    background-color: var(--color-input);
+    border: 2px solid;
+    border-color: var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow);
+    font-size: 11px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4L6 8L10 4' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+  }
+
+  /* Windows 98 Dialog/Modal */
+  .dialog-98 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 300;
+    background-color: var(--color-card);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .dialog-overlay-98 {
+    position: fixed;
+    inset: 0;
+    background-color: var(--color-muted);
+    z-index: 250;
+  }
+
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-input);
+    border: 1px solid var(--color-shadow);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-button-face);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+  }
+
+  ::-webkit-scrollbar-button {
+    background-color: var(--color-button-face);
+    border: 2px solid;
+    border-color: var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight);
+    height: 16px;
+    width: 16px;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .desktop-environment {
+      touch-action: none;
+    }
+
+    .taskbar {
+      height: 32px;
+    }
+
+    .taskbar-start-button {
+      height: 26px;
+      padding: 0 20px 0 6px;
+    }
+
+    .window-98 {
+      max-width: 95vw;
+      max-height: 85vh;
+    }
+
+    .button-98 {
+      height: 28px;
+      min-width: 75px;
+    }
+
+    .input-98 {
+      height: 28px;
+    }
+  }
+}
