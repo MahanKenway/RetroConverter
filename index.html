@@ -10,6 +10,15 @@
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   
+  <script>
+    (function () {
+      const redirect = sessionStorage.getItem("gh-pages-path");
+      if (redirect) {
+        sessionStorage.removeItem("gh-pages-path");
+        window.history.replaceState(null, "", redirect);
+      }
+    })();
+  </script>
   <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fretroconve9073back.builtwithrocket.new&_be=https%3A%2F%2Fappanalytics.rocket.new&_v=0.1.17"></script>
   <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.2"></script>
   </head>
