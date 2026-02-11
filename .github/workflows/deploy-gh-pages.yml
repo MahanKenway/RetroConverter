@@ -2,6 +2,14 @@ name: Deploy to GitHub Pages
 
 on:
   push:
+    branches: ["main", "master", "work"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
     branches: ["main", "master"]
   workflow_dispatch:
 
@@ -34,6 +42,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Add .nojekyll
+        run: touch build/.nojekyll
+
+      - name: Deploy build to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          force_orphan: true
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
