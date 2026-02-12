@@ -1,55 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import Icon from './AppIcon';
+import React, { useEffect, useState } from 'react';
 
 const TaskbarComponent = ({ windows, activeWindowId, onTaskbarClick }) => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
+    const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (date) => {
-    const hours = date?.getHours();
-    const minutes = date?.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `${displayHours}:${displayMinutes} ${ampm}`;
-  };
-
   return (
-    <div className="taskbar">
-      <button className="taskbar-start-button">
-        <div className="taskbar-start-logo">
-          <Icon name="Zap" size={12} color="#FFFFFF" />
-        </div>
-        <span>Start</span>
-      </button>
-      <div className="taskbar-divider" />
-      <div className="flex-1 flex items-center gap-1 px-1">
-        {windows?.map(window => (
+    <div className="fixed bottom-0 left-0 right-0 h-10 bg-slate-300 border-t-2 border-slate-500 flex items-center px-2 gap-2 z-[999]">
+      <button type="button" className="px-3 h-7 border border-slate-600 bg-slate-100 font-semibold text-sm">Start</button>
+      <div className="flex-1 flex gap-1 overflow-auto">
+        {windows?.map((win) => (
           <button
-            key={window?.id}
-            className={`button-98 ${activeWindowId === window?.id ? 'active' : ''}`}
-            onClick={() => onTaskbarClick(window?.id)}
-            style={{
-              borderColor: activeWindowId === window?.id 
-                ? 'var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow)'
-                : 'var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight)'
-            }}
+            type="button"
+            key={win.id}
+            className={`px-3 h-7 border text-sm whitespace-nowrap ${activeWindowId === win.id ? 'bg-slate-100 border-slate-700' : 'bg-slate-200 border-slate-500'}`}
+            onClick={() => onTaskbarClick?.(win.id)}
           >
-            <Icon name="FileText" size={12} />
-            <span className="truncate max-w-[120px]">{window?.title}</span>
+            {win.title}
           </button>
         ))}
       </div>
-      <div className="taskbar-clock">
-        <Icon name="Clock" size={12} className="mr-1" />
-        {formatTime(currentTime)}
+      <div className="px-2 h-7 border border-slate-600 bg-slate-100 text-xs grid place-items-center min-w-20">
+        {now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </div>
     </div>
   );
