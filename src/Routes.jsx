@@ -4,10 +4,17 @@ import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
 import NotFound from "pages/NotFound";
 import Windows98DesktopInterface from './pages/windows-98-desktop-interface';
+import useGoogleAnalytics from './hooks/useGoogleAnalytics';
+
+const AnalyticsTracker = () => {
+  useGoogleAnalytics();
+  return null;
+};
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <AnalyticsTracker />
       <ErrorBoundary>
       <ScrollToTop />
       <RouterRoutes>
