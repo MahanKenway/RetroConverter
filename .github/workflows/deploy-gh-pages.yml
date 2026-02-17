@@ -33,7 +33,7 @@ jobs:
 
       - name: Install deps
         if: steps.detect.outputs.node == 'true'
-        run: npm ci
+        run: npm install
 
       - name: Build
         if: steps.detect.outputs.node == 'true'
