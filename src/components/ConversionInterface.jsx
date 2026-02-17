@@ -430,6 +430,142 @@ const ConversionInterface = () => {
           <div className="category-tabs">
             {Object.entries(CATS).map(([k, v]) => (
               <button key={k} type="button" className={`win98-tab ${cat === k ? 'active' : ''}`} onClick={() => changeCat(k)}>{v.label}</button>
+const ConversionInterface = () => {
+  const [cat, setCat] = useState('image');
+  const [fmt, setFmt] = useState('png');
+  const [files, setFiles] = useState([]);
+  const [drag, setDrag] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [pct, setPct] = useState(0);
+  const [results, setResults] = useState([]);
+  const [err, setErr] = useState('');
+  const [log, setLog] = useState([]);
+  const [editor, setEditor] = useState(false);
+  const [sFrom, setSFrom] = useState('1');
+  const [sTo, setSTo] = useState('');
+  const fileRef = useRef();
+
+  const addLog = msg => setLog(p => [...p.slice(-80), `[${new Date().toLocaleTimeString()}] ${msg}`]);
+
+  const changeCat = c => {
+    setCat(c);
+    setFmt(CATS[c].formats[0]);
+    setFiles([]);
+    setResults([]);
+    setErr('');
+    setLog([]);
+    setEditor(false);
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const pickFiles = fs => {
+    const a = Array.from(fs);
+    setFiles(a);
+    setResults([]);
+    setErr('');
+    a.forEach(f => addLog(`📂 ${f.name} (${(f.size / 1024).toFixed(1)} KB)`));
+  };
+
+  const handleDrop = useCallback(e => {
+    e.preventDefault();
+    setDrag(false);
+    pickFiles(e.dataTransfer.files);
+  }, []);
+
+  const convert = async () => {
+    if (!files.length) {
+      setErr('Please select a file first.');
+      return;
+    }
+    setBusy(true);
+    setPct(10);
+    setResults([]);
+    setErr('');
+    setLog([]);
+    try {
+      addLog(`🚀 ${files.map(f => f.name).join(', ')} → ${fmt.toUpperCase()}`);
+      setPct(35);
+      let blobs = [];
+
+      if (cat === 'image') {
+        if (fmt === 'pdf') {
+          addLog('Image → PDF...');
+          blobs = [{ blob: await imageToPDF(files[0]), name: files[0].name.replace(/\.[^.]+$/, '') + '.pdf' }];
+        } else {
+          addLog('Converting image...');
+          blobs = [{ blob: await convertImage(files[0], fmt), name: files[0].name.replace(/\.[^.]+$/, '') + '.' + fmt }];
+        }
+      } else if (cat === 'pdf') {
+        if (fmt === 'merge') {
+          if (files.length < 2) throw new Error('Select at least 2 PDF files to merge');
+          addLog(`Merging ${files.length} PDFs...`);
+          blobs = [{ blob: await mergePDFs(files), name: 'merged.pdf' }];
+        } else {
+          addLog(`Splitting pages ${sFrom}–${sTo || 'end'}...`);
+          blobs = [{ blob: await splitPDF(files[0], parseInt(sFrom, 10), parseInt(sTo, 10) || undefined), name: files[0].name.replace('.pdf', `_p${sFrom}-${sTo || 'end'}.pdf`) }];
+        }
+      } else if (cat === 'document') {
+        addLog('Converting document...');
+        blobs = [{ blob: await convertText(files[0], fmt), name: files[0].name.replace(/\.[^.]+$/, '') + '.' + fmt }];
+      } else {
+        blobs = [{ blob: files[0], name: files[0].name.replace(/\.[^.]+$/, '') + '.' + fmt }];
+        addLog('⚠️ Audio: browser cannot transcode, file renamed only.');
+      }
+
+      setPct(90);
+      await new Promise(r => setTimeout(r, 150));
+      const final = blobs.map(b => ({ ...b, url: URL.createObjectURL(b.blob), size: (b.blob.size / 1024).toFixed(1) }));
+      setResults(final);
+      final.forEach(r => {
+        addLog(`✅ ${r.name} (${r.size} KB)`);
+        saveToHistory({
+          category: cat,
+          input: files.map(f => f.name).join(', '),
+          output: r.name,
+          sizeKb: r.size,
+          mode: fmt,
+        });
+      });
+      setPct(100);
+    } catch (e) {
+      setErr(e.message || 'Conversion failed');
+      addLog(`❌ ${e.message}`);
+      setPct(0);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const downloadAll = () => results.forEach(r => {
+    const a = document.createElement('a');
+    a.href = r.url;
+    a.download = r.name;
+    a.click();
+  });
+
+  const reset = () => {
+    setFiles([]);
+    setResults([]);
+    setErr('');
+    setPct(0);
+    setLog([]);
+    setEditor(false);
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const category = CATS[cat];
+
+  if (editor && files[0]) return <ImageEditor file={files[0]} onClose={() => setEditor(false)} />;
+
+  return (
+    <div className="converter-root">
+      {/* LEFT */}
+      <div className="converter-left">
+        <div className="win98-group">
+          <div className="win98-group-label">Category</div>
+          <div className="category-tabs">
+            {Object.entries(CATS).map(([k, v]) => (
+              <button key={k} type="button" className={`win98-tab ${cat === k ? 'active' : ''}`} onClick={() => changeCat(k)}>{v.label}</button>
 // ─── Text Converter ────────────────────────────────────────────────────────────
 async function convertText(file, outputFormat) {
   const text = await file.text();

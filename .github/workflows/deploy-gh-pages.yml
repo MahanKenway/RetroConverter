@@ -8,51 +8,36 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: "gh-pages"
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Detect Node project
-        id: detect
-        run: |
-          if [ -f package.json ]; then
-            echo "node=true" >> $GITHUB_OUTPUT
-          else
-            echo "node=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Setup Node
-        if: steps.detect.outputs.node == 'true'
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Install deps
-        if: steps.detect.outputs.node == 'true'
+      - name: Install dependencies
         run: npm install
 
       - name: Build
-        if: steps.detect.outputs.node == 'true'
-        run: npm run build || echo "skip build"
+        run: npm run build
 
-      - name: Detect output
-        id: out
-        run: |
-          if [ -d dist ]; then echo "dir=dist" >> $GITHUB_OUTPUT
-          elif [ -d build ]; then echo "dir=build" >> $GITHUB_OUTPUT
-          elif [ -d out ]; then echo "dir=out" >> $GITHUB_OUTPUT
-          else echo "dir=." >> $GITHUB_OUTPUT
-          fi
+      - name: Add .nojekyll
+        run: touch build/.nojekyll
 
-      - name: Disable Jekyll
-        run: touch ${{ steps.out.outputs.dir }}/.nojekyll
-
-      - name: Deploy
+      - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ steps.out.outputs.dir }}
+          publish_dir: ./build
+          publish_branch: gh-pages
+          force_orphan: true

@@ -621,6 +621,181 @@ body {
   overflow: hidden;
 }
 
+
+/* ─── Select ─────────────────────────────────────────────────────────── */
+.win98-select {
+  width: 100%;
+  height: 22px;
+  padding: 0 4px;
+  background: var(--w98-white);
+  border: 2px solid;
+  border-color: var(--w98-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-shadow);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ─── Drop Zone ──────────────────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--w98-shadow);
+  background: var(--w98-white);
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+  font-size: 11px;
+  padding: 12px;
+  transition: background 0.1s;
+}
+
+.drop-zone.dragging {
+  background: #E8F4FF;
+  border-color: var(--w98-navy);
+}
+
+.drop-zone.has-file {
+  border-style: solid;
+  border-color: var(--w98-navy);
+  background: #F0F8FF;
+}
+
+.drop-zone-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--w98-gray);
+}
+
+.drop-zone-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.file-icon { font-size: 28px; }
+
+.file-name {
+  font-weight: bold;
+  word-break: break-all;
+  font-size: 11px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size { color: var(--w98-gray); font-size: 10px; }
+
+/* ─── Buttons ────────────────────────────────────────────────────────── */
+.converter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+.win98-button {
+  height: 24px;
+  padding: 0 16px;
+  background: var(--w98-silver);
+  border: 2px solid;
+  border-color: var(--w98-highlight) var(--w98-dark-shadow) var(--w98-dark-shadow) var(--w98-highlight);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.win98-button:hover:not(:disabled) {
+  background: var(--w98-light);
+}
+
+.win98-button:active:not(:disabled) {
+  border-color: var(--w98-dark-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-dark-shadow);
+}
+
+.win98-button:disabled {
+  color: var(--w98-gray);
+  cursor: not-allowed;
+}
+
+.win98-button.primary {
+  background: var(--w98-navy);
+  color: var(--w98-white);
+  font-weight: bold;
+}
+
+.win98-button.primary:hover:not(:disabled) {
+  background: #0000A0;
+}
+
+.win98-button.success {
+  background: var(--w98-green);
+  color: var(--w98-white);
+  font-weight: bold;
+}
+
+/* ─── Error ──────────────────────────────────────────────────────────── */
+.win98-error {
+  margin: 4px 8px;
+  padding: 6px 8px;
+  background: #FFF0F0;
+  border: 2px solid;
+  border-color: var(--w98-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-shadow);
+  color: var(--w98-red);
+  font-size: 11px;
+}
+
+/* ─── Progress ───────────────────────────────────────────────────────── */
+.win98-progress {
+  height: 18px;
+  background: var(--w98-white);
+  border: 2px solid;
+  border-color: var(--w98-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-shadow);
+  overflow: hidden;
+}
+
+.win98-progress-bar {
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--w98-navy),
+    var(--w98-navy) 10px,
+    #0000C0 10px,
+    #0000C0 20px
+  );
+  transition: width 0.3s ease;
+}
+
+.win98-progress-bar.animated {
+  animation: stripemove 0.5s linear infinite;
+}
+
+@keyframes stripemove {
+  0% { background-position: 0 0; }
+  100% { background-position: 28px 0; }
+}
+
+/* ─── Preview ────────────────────────────────────────────────────────── */
+.preview-area {
+  background: var(--w98-white);
+  border: 2px solid;
+  border-color: var(--w98-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-shadow);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .preview-img {
   max-width: 100%;
   max-height: 200px;
