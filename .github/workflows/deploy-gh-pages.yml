@@ -8,75 +8,51 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: gh-pages
-  cancel-in-progress: true
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2️⃣ Detect if Node project
-      - name: Detect package.json
+      - name: Detect Node project
         id: detect
         run: |
           if [ -f package.json ]; then
-            echo "node_project=true" >> $GITHUB_OUTPUT
+            echo "node=true" >> $GITHUB_OUTPUT
           else
-            echo "node_project=false" >> $GITHUB_OUTPUT
+            echo "node=false" >> $GITHUB_OUTPUT
           fi
 
-      # 3️⃣ Setup Node (only if needed)
       - name: Setup Node
-        if: steps.detect.outputs.node_project == 'true'
+        if: steps.detect.outputs.node == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      # 4️⃣ Install deps
-      - name: Install dependencies
-        if: steps.detect.outputs.node_project == 'true'
+      - name: Install deps
+        if: steps.detect.outputs.node == 'true'
         run: npm ci
 
-      # 5️⃣ Build (safe mode)
       - name: Build
-        if: steps.detect.outputs.node_project == 'true'
-        run: |
-          npm run build || echo "No build script found, skipping build"
+        if: steps.detect.outputs.node == 'true'
+        run: npm run build || echo "skip build"
 
-      # 6️⃣ Detect output folder
-      - name: Detect build output
-        id: output
+      - name: Detect output
+        id: out
         run: |
-          if [ -d dist ]; then
-            echo "dir=dist" >> $GITHUB_OUTPUT
-          elif [ -d build ]; then
-            echo "dir=build" >> $GITHUB_OUTPUT
-          elif [ -d out ]; then
-            echo "dir=out" >> $GITHUB_OUTPUT
-          else
-            echo "dir=." >> $GITHUB_OUTPUT
+          if [ -d dist ]; then echo "dir=dist" >> $GITHUB_OUTPUT
+          elif [ -d build ]; then echo "dir=build" >> $GITHUB_OUTPUT
+          elif [ -d out ]; then echo "dir=out" >> $GITHUB_OUTPUT
+          else echo "dir=." >> $GITHUB_OUTPUT
           fi
 
-      # 7️⃣ Prevent Jekyll issues
       - name: Disable Jekyll
-        run: touch ${{ steps.output.outputs.dir }}/.nojekyll
+        run: touch ${{ steps.out.outputs.dir }}/.nojekyll
 
-      # 8️⃣ Deploy
-      - name: Deploy to gh-pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ steps.output.outputs.dir }}
-          force_orphan: true
-
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          publish_branch: gh-pages
-          force_orphan: true
+          publish_dir: ${{ steps.out.outputs.dir }}
