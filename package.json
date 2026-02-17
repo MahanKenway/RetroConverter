@@ -4,7 +4,6 @@
   "private": true,
   "rocketCritical": {
     "dependencies": [
-      "@dhiwise/component-tagger",
       "react",
       "react-dom",
       "@reduxjs/toolkit",
@@ -24,10 +23,9 @@
       "build",
       "serve"
     ],
-    "warning": "🚨 CRITICAL: DO NOT REMOVE OR MODIFY ABOVE DEPENDENCIES - Required for app functionality"
+    "warning": "\ud83d\udea8 CRITICAL: DO NOT REMOVE OR MODIFY ABOVE DEPENDENCIES - Required for app functionality"
   },
   "dependencies": {
-    "@dhiwise/component-tagger": "^1.0.14",
     "@radix-ui/react-slot": "^1.2.3",
     "@reduxjs/toolkit": "^2.6.1",
     "@rocketnew/llm-sdk": "^1.0.3",
