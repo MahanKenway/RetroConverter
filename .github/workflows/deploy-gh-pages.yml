@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (gh-pages branch)
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -34,10 +34,10 @@ jobs:
       - name: Add .nojekyll
         run: touch build/.nojekyll
 
-      - name: Deploy to gh-pages branch
+      - name: Deploy build to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
           publish_branch: gh-pages
+          publish_dir: ./build
           force_orphan: true
