@@ -99,3 +99,18 @@ Build the application for production:
 ```bash
 npm run build
 ```
+
+### GitHub Pages
+
+This repository deploys the compiled Vite output (`build/`) to the **`gh-pages`** branch.
+
+1. Push your branch to `main`.
+2. In GitHub, go to **Settings → Pages**.
+3. Set **Source** to **Deploy from a branch**.
+4. Choose branch **`gh-pages`** and folder **`/ (root)`**.
+5. Run the workflow `.github/workflows/deploy-gh-pages.yml` (or push to `main`).
+
+Notes:
+- `vite.config.mjs` automatically sets the correct `base` path during GitHub Actions runs.
+- `public/404.html` plus the redirect snippet in `index.html` keeps SPA routes working on GitHub Pages refresh/direct links.
+- If you still see a white page, hard refresh and verify Network does **not** request `/src/index.jsx`.

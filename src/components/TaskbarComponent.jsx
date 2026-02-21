@@ -1,57 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import Icon from './AppIcon';
+import React, { useEffect, useState, useRef } from 'react';
 
 const TaskbarComponent = ({ windows, activeWindowId, onTaskbarClick }) => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [now, setNow] = useState(new Date());
+  const [showStart, setShowStart] = useState(false);
+  const startRef = useRef();
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
+    const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (date) => {
-    const hours = date?.getHours();
-    const minutes = date?.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `${displayHours}:${displayMinutes} ${ampm}`;
-  };
+  useEffect(() => {
+    const handler = (e) => {
+      if (startRef.current && !startRef.current.contains(e.target)) {
+        setShowStart(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
 
   return (
-    <div className="taskbar">
-      <button className="taskbar-start-button">
-        <div className="taskbar-start-logo">
-          <Icon name="Zap" size={12} color="#FFFFFF" />
+    <>
+      {/* Start Menu */}
+      {showStart && (
+        <div className="start-menu">
+          <div className="start-menu-sidebar">
+            <span>RetroConverter</span>
+          </div>
+          <div className="start-menu-items">
+            <div className="start-menu-item" onClick={() => { setShowStart(false); onTaskbarClick?.('converter-window'); }}>
+              <span>🖼️</span> RetroConverter
+            </div>
+            <div className="start-menu-separator" />
+            <div className="start-menu-item" onClick={() => window.location.reload()}>
+              <span>🔄</span> Restart
+            </div>
+          </div>
         </div>
-        <span>Start</span>
-      </button>
-      <div className="taskbar-divider" />
-      <div className="flex-1 flex items-center gap-1 px-1">
-        {windows?.map(window => (
+      )}
+
+      {/* Taskbar */}
+      <div className="taskbar">
+        {/* Start Button */}
+        <div ref={startRef}>
           <button
-            key={window?.id}
-            className={`button-98 ${activeWindowId === window?.id ? 'active' : ''}`}
-            onClick={() => onTaskbarClick(window?.id)}
-            style={{
-              borderColor: activeWindowId === window?.id 
-                ? 'var(--color-shadow) var(--color-highlight) var(--color-highlight) var(--color-shadow)'
-                : 'var(--color-highlight) var(--color-shadow) var(--color-shadow) var(--color-highlight)'
-            }}
+            type="button"
+            className={`taskbar-start-btn ${showStart ? 'active' : ''}`}
+            onClick={() => setShowStart(v => !v)}
           >
-            <Icon name="FileText" size={12} />
-            <span className="truncate max-w-[120px]">{window?.title}</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect width="7" height="7" fill="#FF0000" />
+              <rect x="9" width="7" height="7" fill="#00FF00" />
+              <rect y="9" width="7" height="7" fill="#0000FF" />
+              <rect x="9" y="9" width="7" height="7" fill="#FFFF00" />
+            </svg>
+            <strong>Start</strong>
           </button>
-        ))}
+        </div>
+
+        <div className="taskbar-divider" />
+
+        {/* Window Buttons */}
+        <div className="taskbar-windows">
+          {windows?.map(win => (
+            <button
+              key={win.id}
+              type="button"
+              className={`taskbar-window-btn ${activeWindowId === win.id && !win.isMinimized ? 'active' : ''}`}
+              onClick={() => onTaskbarClick?.(win.id)}
+            >
+              🖼️ {win.title}
+            </button>
+          ))}
+        </div>
+
+        {/* System Tray */}
+        <div className="taskbar-tray">
+          <div className="tray-icons">
+            <span title="Network">🌐</span>
+            <span title="Volume">🔊</span>
+          </div>
+          <div className="tray-clock" title={dateStr}>
+            {timeStr}
+          </div>
+        </div>
       </div>
-      <div className="taskbar-clock">
-        <Icon name="Clock" size={12} className="mr-1" />
-        {formatTime(currentTime)}
-      </div>
-    </div>
+    </>
   );
 };
 

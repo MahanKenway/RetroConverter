@@ -6,6 +6,12 @@ export function useGoogleAnalytics() {
 
   useEffect(() => {
     const measurementId = import.meta.env?.VITE_GA_MEASUREMENT_ID;
+    const allowGithubIoTracking = import.meta.env?.VITE_GA_ALLOW_GITHUB_IO === 'true';
+    const isGithubIoHost = window?.location?.hostname?.endsWith('github.io');
+
+    if (isGithubIoHost && !allowGithubIoTracking) {
+      return;
+    }
     
     if (!measurementId || measurementId === 'your-google-analytics-id-here') {
       console.warn('Google Analytics: Measurement ID not configured');
