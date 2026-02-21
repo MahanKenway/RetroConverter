@@ -4,6 +4,7 @@ on:
   push:
     branches: ["main", "work"]
   workflow_dispatch:
+    branches: ["main"]
 
 permissions:
   contents: write
@@ -48,3 +49,28 @@ jobs:
           publish_dir: ./build
           publish_branch: gh-pages
           force_orphan: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm install
+
+      - name: Build (REQUIRED)
+        run: npm run build
+
+      - name: Add .nojekyll
+        run: touch dist/.nojekyll
+
+      - name: Deploy dist
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
